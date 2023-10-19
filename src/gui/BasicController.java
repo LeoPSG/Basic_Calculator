@@ -134,33 +134,41 @@ public class BasicController {
 			result.setText(equation);
 		}
 	}
+	
+	public void addMathSymbol(String symbol) {
+		if (isNumerical(resolution.size() - 1) || isParenthese(resolution.size() - 1)) {
+			equation += symbol;
+			resolution.add(symbol);
+		} else {
+			Utils.removeLastChar(equation);
+			equation += symbol;
+			resolution.set(resolution.size() - 1, symbol);
+		}
+		result.setText(equation);
+	}
 
 	@FXML
 	public void onMinusAction() {
-		equation += "-";
+		addMathSymbol("-");
 		result.setText(equation);
-		resolution.add("-");
 	}
 
 	@FXML
 	public void onPlusAction() {
-		equation += "+";
+		addMathSymbol("+");
 		result.setText(equation);
-		resolution.add("+");
 	}
 
 	@FXML
 	public void onDivideAction() {
-		equation += "\u00F7";
+		addMathSymbol("\u00F7");
 		result.setText(equation);
-		resolution.add("\u00F7");
 	}
 
 	@FXML
 	public void onMultiplyAction() {
-		equation += "×";
+		addMathSymbol("×");
 		result.setText(equation);
-		resolution.add("×");
 	}
 
 	@FXML
@@ -172,9 +180,8 @@ public class BasicController {
 
 	@FXML
 	public void onPowerAction() {
-		equation += "^";
+		addMathSymbol("^");
 		result.setText(equation);
-		resolution.add("^");
 	}
 	
 	@FXML
@@ -448,24 +455,18 @@ public class BasicController {
 		}
 	}
 	
-	public void parenthesesHell(int leftParentheseIndex, int rightParentheseIndex) {
-		
-		int leftParentheseCount = 0;
-		int rightParentheseCount = 0;
-		
-		for (int i = 0; i < resolution.size(); i++) {
-			if (resolution.get(i) == "(") {
-				leftParentheseCount++;
-				leftParentheseIndex = i;
-			}
-			else if (resolution.get(i) == ")") {
-				rightParentheseCount++;
-				rightParentheseIndex = i;
-			}
-			if (leftParentheseCount > 0 && leftParentheseCount == rightParentheseCount) {
-				
-			}
-		}
+	public void plusMath(int indexOfSymbol) {
+		Double finalResult = Utils.tryParseToDouble(resolution.get(indexOfSymbol)) + Utils.tryParseToDouble(resolution.get(indexOfSymbol));
+		resolution.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
+		resolution.remove(indexOfSymbol + 1);
+		resolution.remove(indexOfSymbol);
+	}
+	
+	public void minusMath(int indexOfSymbol) {
+		Double finalResult = Utils.tryParseToDouble(resolution.get(indexOfSymbol)) - Utils.tryParseToDouble(resolution.get(indexOfSymbol));
+		resolution.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
+		resolution.remove(indexOfSymbol + 1);
+		resolution.remove(indexOfSymbol);
 	}
 	
 	public boolean isThereAMathSymbol() {
@@ -476,20 +477,40 @@ public class BasicController {
 		}
 	}
 	
-	public boolean isFirstIndexNumericalOrRoot() {
-		if (resolution.get(0) == "\u221A") {
-			return true;
-		} else if (Utils.isNumeric(resolution.get(0))) {
-			return true;
-		} else if (resolution.get(0) == "-" && Utils.isNumeric(resolution.get(1))) {
+	public boolean isNumerical(int index) {
+		if (Utils.isNumeric(resolution.get(index))) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-	public boolean mathCanBeDone() {
-		if (isThereAMathSymbol() && isFirstIndexNumericalOrRoot() && resolution.size() >= 2) {
+	public boolean isMinus(int index) {
+		if (resolution.get(index) == "-") {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+    public boolean isRoot(int index) {
+    	if (resolution.get(index) == "\u221A") {
+			return true;
+		} else {
+			return false;
+		}
+	}
+    
+    public boolean isParenthese(int index) {
+    	if (resolution.get(index) == "(") {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isFirstIndexUsable() {
+		if (isNumerical(0) || isMinus(0) || isRoot(0) || isParenthese(0)) {
 			return true;
 		} else {
 			return false;
@@ -517,6 +538,14 @@ public class BasicController {
 			}
 		}
 		return symbolIndex;
+	}
+	
+	public boolean mathCanBeDone() {
+		if (isThereAMathSymbol() && isFirstIndexUsable() && resolution.size() >= 2) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	@FXML
@@ -548,7 +577,7 @@ public class BasicController {
 				// example: (2+2)x(2+2) , *the second set of parentheses is getting the index of the first set , result: x2)
 				
 				for (int i = 0; i < resolution.size(); i++) {
-					if (resolution.get(i) == "(") {
+					if (resolution.get(i) == "(" && leftParentheseCount < 2) {
 						leftParentheseCount++;
 						leftParentheseIndex = i;
 					}
@@ -595,8 +624,19 @@ public class BasicController {
 				indexOfSymbol = 0;
 			}
 			//plus & minus
-			for (int i = 0; i < resolution.size(); i++) {
-				if (resolution.get(i) == "+" || resolution.get(i) == "-") {
+			if (isThereThisSymbol("+")) {
+				indexOfSymbol =+ symbolIndexFinder("+");
+				plusMath(indexOfSymbol);
+				indexOfSymbol = 0;
+			}
+			
+            if (isThereThisSymbol("-")) {
+            	indexOfSymbol =+ symbolIndexFinder("-");
+				minusMath(indexOfSymbol);
+				indexOfSymbol = 0;
+			}
+            
+			/*
 					if (resolution.get(i) == "+" && resolution.get(i + 1) == "-") {
 						resolution.set(i, "-");
 						resolution.remove(i + 1);
@@ -617,14 +657,14 @@ public class BasicController {
 						resolution.remove(i + 1);
 						resolution.remove(i);
 					}
-				}
-			}
+			*/
+            
+            String substituition = "";
+            for (String e : resolution) {
+            	substituition += e;
+            }
+            equation = substituition;
+            result.setText(equation);
 		}
-		String substituition = "";
-		for (String e : resolution) {
-			substituition += e;
-		}
-		equation = substituition;
-		result.setText(equation);
 	}
 }
