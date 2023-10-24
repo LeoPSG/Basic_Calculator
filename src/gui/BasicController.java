@@ -456,14 +456,14 @@ public class BasicController {
 	}
 	
 	public void plusMath(int indexOfSymbol) {
-		Double finalResult = Utils.tryParseToDouble(resolution.get(indexOfSymbol)) + Utils.tryParseToDouble(resolution.get(indexOfSymbol));
+		Double finalResult = Utils.tryParseToDouble(resolution.get(indexOfSymbol - 1)) + Utils.tryParseToDouble(resolution.get(indexOfSymbol + 1));
 		resolution.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
 		resolution.remove(indexOfSymbol + 1);
 		resolution.remove(indexOfSymbol);
 	}
 	
 	public void minusMath(int indexOfSymbol) {
-		Double finalResult = Utils.tryParseToDouble(resolution.get(indexOfSymbol)) - Utils.tryParseToDouble(resolution.get(indexOfSymbol));
+		Double finalResult = Utils.tryParseToDouble(resolution.get(indexOfSymbol - 1)) - Utils.tryParseToDouble(resolution.get(indexOfSymbol + 1));
 		resolution.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
 		resolution.remove(indexOfSymbol + 1);
 		resolution.remove(indexOfSymbol);
@@ -548,9 +548,7 @@ public class BasicController {
 		}
 	}
 	
-	@FXML
-	public void onEqualAction() {
-		
+	public void mathCalculationCaller() {
 		if (mathCanBeDone()) {
 
 			preResult.setText(equation);
@@ -573,8 +571,8 @@ public class BasicController {
 				
 				// error where the parentheses is in the wrong order or isn't counted correctly
 				//
-				// example: 2x(2x'('2+2)')' , *the "marked" parentheses are being used together , result: 2x(8
-				// example: (2+2)x(2+2) , *the second set of parentheses is getting the index of the first set , result: x2)
+				// example: 2x(2x'('2+2)')' | *the "marked" parentheses are being used together, result: 2x(8
+				// example: (2+2)x(2+2) | *the second set of parentheses is getting the index of the first set, result: x2)
 				
 				for (int i = 0; i < resolution.size(); i++) {
 					if (resolution.get(i) == "(" && leftParentheseCount < 2) {
@@ -623,48 +621,32 @@ public class BasicController {
 				divideMath(indexOfSymbol);
 				indexOfSymbol = 0;
 			}
-			//plus & minus
+			//plus
 			if (isThereThisSymbol("+")) {
 				indexOfSymbol =+ symbolIndexFinder("+");
 				plusMath(indexOfSymbol);
 				indexOfSymbol = 0;
 			}
-			
+			//minus
             if (isThereThisSymbol("-")) {
             	indexOfSymbol =+ symbolIndexFinder("-");
 				minusMath(indexOfSymbol);
 				indexOfSymbol = 0;
 			}
             
-			/*
-					if (resolution.get(i) == "+" && resolution.get(i + 1) == "-") {
-						resolution.set(i, "-");
-						resolution.remove(i + 1);
-					} else if (resolution.get(i) == "-" && resolution.get(i + 1) == "-") {
-						resolution.set(i, "+");
-						resolution.remove(i + 1);
-					}
-					if (resolution.get(i) == "+" && Utils.isNumeric(resolution.get(i + 1))) {
-						Double plus = Utils.tryParseToDouble(resolution.get(i - 1))
-								+ Utils.tryParseToDouble(resolution.get(i + 1));
-						resolution.set(i - 1, Utils.decimalPrinting(plus));
-						resolution.remove(i + 1);
-						resolution.remove(i);
-					} else if (i > 0 && resolution.get(i) == "-" && Utils.isNumeric(resolution.get(i + 1))) {
-						Double minus = Utils.tryParseToDouble(resolution.get(i - 1))
-								- Utils.tryParseToDouble(resolution.get(i + 1));
-						resolution.set(i - 1, Utils.decimalPrinting(minus));
-						resolution.remove(i + 1);
-						resolution.remove(i);
-					}
-			*/
-            
-            String substituition = "";
-            for (String e : resolution) {
-            	substituition += e;
-            }
-            equation = substituition;
-            result.setText(equation);
+            mathCalculationCaller();
 		}
+	}
+	
+	@FXML
+	public void onEqualAction() {
+		mathCalculationCaller();
+		
+		String substituition = "";
+        for (String e : resolution) {
+        	substituition += e;
+        }
+        equation = substituition;
+        result.setText(equation);
 	}
 }
