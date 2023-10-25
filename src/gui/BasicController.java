@@ -136,7 +136,7 @@ public class BasicController {
 	}
 	
 	public void addMathSymbol(String symbol) {
-		if (isNumerical(resolution.size() - 1) || isParenthese(resolution.size() - 1)) {
+		if (isNumerical(resolution, resolution.size() - 1) || isParenthese(resolution, resolution.size() - 1)) {
 			equation += symbol;
 			resolution.add(symbol);
 		} else {
@@ -241,93 +241,93 @@ public class BasicController {
 		}
 	}
 	
-	public void powMultiplicationWithSameBase(int indexOfPowSymbol) {
-		if (resolution.get(indexOfPowSymbol - 1) == resolution.get(indexOfPowSymbol + 3) && resolution.get(indexOfPowSymbol + 2) == "×") {
-			Double newPowValue = Utils.tryParseToDouble(resolution.get(indexOfPowSymbol + 1)) + Utils.tryParseToDouble(resolution.get(indexOfPowSymbol + 5));
-			resolution.set(indexOfPowSymbol + 1, newPowValue.toString());
-			resolution.remove(indexOfPowSymbol + 5);
-			resolution.remove(indexOfPowSymbol + 4);
-			resolution.remove(indexOfPowSymbol + 3);
-			resolution.remove(indexOfPowSymbol + 2);
+	public void powMultiplicationWithSameBase(ArrayList<String> list, int indexOfPowSymbol) {
+		if (list.get(indexOfPowSymbol - 1) == list.get(indexOfPowSymbol + 3) && list.get(indexOfPowSymbol + 2) == "×") {
+			Double newPowValue = Utils.tryParseToDouble(list.get(indexOfPowSymbol + 1)) + Utils.tryParseToDouble(list.get(indexOfPowSymbol + 5));
+			list.set(indexOfPowSymbol + 1, newPowValue.toString());
+			list.remove(indexOfPowSymbol + 5);
+			list.remove(indexOfPowSymbol + 4);
+			list.remove(indexOfPowSymbol + 3);
+			list.remove(indexOfPowSymbol + 2);
 		}
 	}
-	public void powDivisionWithSameBase(int indexOfPowSymbol) {
-		if (resolution.get(indexOfPowSymbol - 1) == resolution.get(indexOfPowSymbol + 3) && resolution.get(indexOfPowSymbol + 2) == "\u00F7") {
-			Double newPowValue = Utils.tryParseToDouble(resolution.get(indexOfPowSymbol + 1)) - Utils.tryParseToDouble(resolution.get(indexOfPowSymbol + 5));
-			resolution.set(indexOfPowSymbol + 1, newPowValue.toString());
-			resolution.remove(indexOfPowSymbol + 5);
-			resolution.remove(indexOfPowSymbol + 4);
-			resolution.remove(indexOfPowSymbol + 3);
-			resolution.remove(indexOfPowSymbol + 2);
+	public void powDivisionWithSameBase(ArrayList<String> list, int indexOfPowSymbol) {
+		if (list.get(indexOfPowSymbol - 1) == list.get(indexOfPowSymbol + 3) && list.get(indexOfPowSymbol + 2) == "\u00F7") {
+			Double newPowValue = Utils.tryParseToDouble(list.get(indexOfPowSymbol + 1)) - Utils.tryParseToDouble(list.get(indexOfPowSymbol + 5));
+			list.set(indexOfPowSymbol + 1, newPowValue.toString());
+			list.remove(indexOfPowSymbol + 5);
+			list.remove(indexOfPowSymbol + 4);
+			list.remove(indexOfPowSymbol + 3);
+			list.remove(indexOfPowSymbol + 2);
 		}
 	}
-	public void powOnPow(int indexOfPowSymbol) {
-		if (resolution.get(indexOfPowSymbol + 3) == "^") {
-			Double newPowValue = Utils.tryParseToDouble(resolution.get(indexOfPowSymbol + 1)) * Utils.tryParseToDouble(resolution.get(indexOfPowSymbol + 4));
-			resolution.set(indexOfPowSymbol + 1, newPowValue.toString());
-			resolution.remove(indexOfPowSymbol + 4);
-			resolution.remove(indexOfPowSymbol + 3);
-			resolution.remove(indexOfPowSymbol + 2);
-			resolution.remove(indexOfPowSymbol - 2);
+	public void powOnPow(ArrayList<String> list, int indexOfPowSymbol) {
+		if (list.get(indexOfPowSymbol + 3) == "^") {
+			Double newPowValue = Utils.tryParseToDouble(list.get(indexOfPowSymbol + 1)) * Utils.tryParseToDouble(list.get(indexOfPowSymbol + 4));
+			list.set(indexOfPowSymbol + 1, newPowValue.toString());
+			list.remove(indexOfPowSymbol + 4);
+			list.remove(indexOfPowSymbol + 3);
+			list.remove(indexOfPowSymbol + 2);
+			list.remove(indexOfPowSymbol - 2);
 		}
 	}
-	public void powOnMultiplication(int indexOfPowSymbol) {
-		if (resolution.get(indexOfPowSymbol - 1) == ")" && resolution.get(indexOfPowSymbol - 3) == "×") {
-			Double aVar = Utils.tryParseToDouble(resolution.get(indexOfPowSymbol - 4));
-			Double bVar = Utils.tryParseToDouble(resolution.get(indexOfPowSymbol - 2));
-			resolution.set(indexOfPowSymbol - 5, aVar.toString());
-			resolution.set(indexOfPowSymbol - 4, "^");
-			resolution.set(indexOfPowSymbol - 3, resolution.get(indexOfPowSymbol + 1));
-			resolution.set(indexOfPowSymbol - 2, "*");
-			resolution.set(indexOfPowSymbol - 1, bVar.toString());
+	public void powOnMultiplication(ArrayList<String> list, int indexOfPowSymbol) {
+		if (list.get(indexOfPowSymbol - 1) == ")" && list.get(indexOfPowSymbol - 3) == "×") {
+			Double aVar = Utils.tryParseToDouble(list.get(indexOfPowSymbol - 4));
+			Double bVar = Utils.tryParseToDouble(list.get(indexOfPowSymbol - 2));
+			list.set(indexOfPowSymbol - 5, aVar.toString());
+			list.set(indexOfPowSymbol - 4, "^");
+			list.set(indexOfPowSymbol - 3, list.get(indexOfPowSymbol + 1));
+			list.set(indexOfPowSymbol - 2, "*");
+			list.set(indexOfPowSymbol - 1, bVar.toString());
 
 		}
 	}
-	public void powOnDivision(int indexOfPowSymbol) {
-		if (resolution.get(indexOfPowSymbol - 1) == ")" && resolution.get(indexOfPowSymbol - 3) == "\u00F7") {
-			Double aVar = Utils.tryParseToDouble(resolution.get(indexOfPowSymbol - 4));
-			Double bVar = Utils.tryParseToDouble(resolution.get(indexOfPowSymbol - 2));
-			resolution.set(indexOfPowSymbol - 5, aVar.toString());
-			resolution.set(indexOfPowSymbol - 4, "^");
-			resolution.set(indexOfPowSymbol - 3, resolution.get(indexOfPowSymbol + 1));
-			resolution.set(indexOfPowSymbol - 2, "\u00F7");
-			resolution.set(indexOfPowSymbol - 1, bVar.toString());
+	public void powOnDivision(ArrayList<String> list, int indexOfPowSymbol) {
+		if (list.get(indexOfPowSymbol - 1) == ")" && list.get(indexOfPowSymbol - 3) == "\u00F7") {
+			Double aVar = Utils.tryParseToDouble(list.get(indexOfPowSymbol - 4));
+			Double bVar = Utils.tryParseToDouble(list.get(indexOfPowSymbol - 2));
+			list.set(indexOfPowSymbol - 5, aVar.toString());
+			list.set(indexOfPowSymbol - 4, "^");
+			list.set(indexOfPowSymbol - 3, list.get(indexOfPowSymbol + 1));
+			list.set(indexOfPowSymbol - 2, "\u00F7");
+			list.set(indexOfPowSymbol - 1, bVar.toString());
 		}
 	}
 	
-	public void powerCalculation(int indexOfPowSymbol) {
-		if (resolution.size() >= 7 && indexOfPowSymbol < (double) resolution.size() / 2) {
-			powMultiplicationWithSameBase(indexOfPowSymbol);
-			powDivisionWithSameBase(indexOfPowSymbol);
-			powOnPow(indexOfPowSymbol);
+	public void powerCalculation(ArrayList<String> list, int indexOfPowSymbol) {
+		if (list.size() >= 7 && indexOfPowSymbol < (double) list.size() / 2) {
+			powMultiplicationWithSameBase(list, indexOfPowSymbol);
+			powDivisionWithSameBase(list, indexOfPowSymbol);
+			powOnPow(list, indexOfPowSymbol);
 		}
-		else if (resolution.size() >= 7 && indexOfPowSymbol > (double) resolution.size() / 2) {
-			powOnMultiplication(indexOfPowSymbol);
-			powOnDivision(indexOfPowSymbol);
+		else if (list.size() >= 7 && indexOfPowSymbol > (double) list.size() / 2) {
+			powOnMultiplication(list, indexOfPowSymbol);
+			powOnDivision(list, indexOfPowSymbol);
 		}
 	}
 	
-	public boolean isTheMathSymbol(String mathSymbolToBeChecked, int mathSymbolIndex) {
-		if (resolution.get(mathSymbolIndex) == mathSymbolToBeChecked) {
+	public boolean isTheMathSymbol(ArrayList<String> list, String mathSymbolToBeChecked, int mathSymbolIndex) {
+		if (list.get(mathSymbolIndex) == mathSymbolToBeChecked) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-	public boolean isThereAMinusSymbol(int mathSymbolIndex) {
+	public boolean isThereAMinusSymbol(ArrayList<String> list, int mathSymbolIndex) {
 		if (mathSymbolIndex >= 2) {
-			if (resolution.get(mathSymbolIndex - 2) == "-" && resolution.get(mathSymbolIndex + 1) == "-") {
+			if (list.get(mathSymbolIndex - 2) == "-" && list.get(mathSymbolIndex + 1) == "-") {
 				return true;
-			} else if (resolution.get(mathSymbolIndex - 2) == "-") {
+			} else if (list.get(mathSymbolIndex - 2) == "-") {
 				return true;
-			} else if (resolution.get(mathSymbolIndex + 1) == "-") {
+			} else if (list.get(mathSymbolIndex + 1) == "-") {
 				return true;
 			} else {
 				return false;
 			}
 		} else {
-			if (resolution.get(mathSymbolIndex + 1) == "-") {
+			if (list.get(mathSymbolIndex + 1) == "-") {
 				return true;
 			} else {
 				return false;
@@ -335,21 +335,21 @@ public class BasicController {
 		}
 	}
 	
-	public int minusSymbolFinder(int mathSymbolIndex) {
+	public int minusSymbolFinder(ArrayList<String> list, int mathSymbolIndex) {
 		int returnValue = 0;
 		
 		if (mathSymbolIndex >= 2) {
-			if (resolution.get(mathSymbolIndex - 2) == "-" && resolution.get(mathSymbolIndex + 1) == "-") {
+			if (list.get(mathSymbolIndex - 2) == "-" && list.get(mathSymbolIndex + 1) == "-") {
 				returnValue = 1;
-			} else if (resolution.get(mathSymbolIndex - 2) == "-") {
+			} else if (list.get(mathSymbolIndex - 2) == "-") {
 				returnValue = 2;
-			} else if (resolution.get(mathSymbolIndex + 1) == "-") {
+			} else if (list.get(mathSymbolIndex + 1) == "-") {
 				returnValue = 3;
 			} else {
 				returnValue = 0;
 			}
 		} else {
-			if (resolution.get(mathSymbolIndex + 1) == "-") {
+			if (list.get(mathSymbolIndex + 1) == "-") {
 				returnValue = 3;
 			} else {
 				returnValue = 0;
@@ -361,14 +361,14 @@ public class BasicController {
 	
 	
 
-	public void multiplyAndDivideCalculationWithMinusSymbol(int mathSymbolIndex, int minusSymbol) {
+	public void multiplyAndDivideCalculationWithMinusSymbol(ArrayList<String> list, int mathSymbolIndex, int minusSymbol) {
 		
-		double var1 = Utils.tryParseToDouble(resolution.get(mathSymbolIndex - 1));
+		double var1 = Utils.tryParseToDouble(list.get(mathSymbolIndex - 1));
 		double var2;
-		if (resolution.get(mathSymbolIndex + 1) == "-") {
-			var2 = Utils.tryParseToDouble(resolution.get(mathSymbolIndex + 2));
+		if (list.get(mathSymbolIndex + 1) == "-") {
+			var2 = Utils.tryParseToDouble(list.get(mathSymbolIndex + 2));
 		} else {
-			var2 = Utils.tryParseToDouble(resolution.get(mathSymbolIndex + 1));
+			var2 = Utils.tryParseToDouble(list.get(mathSymbolIndex + 1));
 		}
 		
 		Double operation;
@@ -377,270 +377,276 @@ public class BasicController {
 		
 		// both numbers are negative
 		case 1:
-			if (isTheMathSymbol("×", mathSymbolIndex)) {
+			if (isTheMathSymbol(list, "×", mathSymbolIndex)) {
 				operation = var1 * var2;
 			} else {
 				operation = var1 / var2;
 			}
-			resolution.set(mathSymbolIndex - 1, Utils.decimalPrinting(operation));
-			resolution.remove(mathSymbolIndex + 2);
-			resolution.remove(mathSymbolIndex + 1);
-			resolution.remove(mathSymbolIndex);
+			list.set(mathSymbolIndex - 1, Utils.decimalPrinting(operation));
+			list.remove(mathSymbolIndex + 2);
+			list.remove(mathSymbolIndex + 1);
+			list.remove(mathSymbolIndex);
 		break;
 		
 		// left number is negative
 		case 2:
-			if (isTheMathSymbol("×", mathSymbolIndex)) {
+			if (isTheMathSymbol(list, "×", mathSymbolIndex)) {
 				operation = var1 * var2;
 			} else {
 				operation = var1 / var2;
 			}
-			resolution.set(mathSymbolIndex - 1, Utils.decimalPrinting(operation));
-			resolution.remove(mathSymbolIndex + 1);
-			resolution.remove(mathSymbolIndex);
+			list.set(mathSymbolIndex - 1, Utils.decimalPrinting(operation));
+			list.remove(mathSymbolIndex + 1);
+			list.remove(mathSymbolIndex);
 		break;
 		
 		// right number is negative
 		case 3:
-			if (isTheMathSymbol("×", mathSymbolIndex)) {
+			if (isTheMathSymbol(list, "×", mathSymbolIndex)) {
 				operation = var1 * var2;
 			} else {
 				operation = var1 / var2;
 			}
-			resolution.set(mathSymbolIndex - 1, "-");
-			resolution.set(mathSymbolIndex, Utils.decimalPrinting(operation));
-			resolution.remove(mathSymbolIndex + 2);
-			resolution.remove(mathSymbolIndex + 1);
+			list.set(mathSymbolIndex - 1, "-");
+			list.set(mathSymbolIndex, Utils.decimalPrinting(operation));
+			list.remove(mathSymbolIndex + 2);
+			list.remove(mathSymbolIndex + 1);
 		break;
 				
 		default:break;
 		}
 	}
 	
-	public void powerMath(int indexOfSymbol) {
-		powerCalculation(indexOfSymbol);
-		Double finalResult = Math.pow(Utils.tryParseToDouble(resolution.get(indexOfSymbol - 1)), Utils.tryParseToDouble(resolution.get(indexOfSymbol + 1)));
-		resolution.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
-		resolution.remove(indexOfSymbol + 1);
-		resolution.remove(indexOfSymbol);
+	public void powerMath(ArrayList<String> list, int indexOfSymbol) {
+		powerCalculation(list, indexOfSymbol);
+		Double finalResult = Math.pow(Utils.tryParseToDouble(list.get(indexOfSymbol - 1)), Utils.tryParseToDouble(list.get(indexOfSymbol + 1)));
+		list.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
+		list.remove(indexOfSymbol + 1);
+		list.remove(indexOfSymbol);
 	}
 	
-	public void rootMath(int indexOfSymbol) {
-		Double finalResult = Math.sqrt(Utils.tryParseToDouble(resolution.get(indexOfSymbol + 1)));
-		resolution.set(indexOfSymbol, Utils.decimalPrinting(finalResult));
-		resolution.remove(indexOfSymbol + 1);
+	public void rootMath(ArrayList<String> list, int indexOfSymbol) {
+		Double finalResult = Math.sqrt(Utils.tryParseToDouble(list.get(indexOfSymbol + 1)));
+		list.set(indexOfSymbol, Utils.decimalPrinting(finalResult));
+		list.remove(indexOfSymbol + 1);
 	}
 	
-	public void multiplyMath(int indexOfSymbol) {
-		if (isThereAMinusSymbol(indexOfSymbol)) {
-			int minusSymbol = minusSymbolFinder(indexOfSymbol);
-			multiplyAndDivideCalculationWithMinusSymbol(indexOfSymbol, minusSymbol);
+	public void multiplyMath(ArrayList<String> list, int indexOfSymbol) {
+		if (isThereAMinusSymbol(list, indexOfSymbol)) {
+			int minusSymbol = minusSymbolFinder(list, indexOfSymbol);
+			multiplyAndDivideCalculationWithMinusSymbol(list, indexOfSymbol, minusSymbol);
 		} else {
-			Double finalResult = Utils.tryParseToDouble(resolution.get(indexOfSymbol - 1)) * Utils.tryParseToDouble(resolution.get(indexOfSymbol + 1));
-			resolution.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
-			resolution.remove(indexOfSymbol + 1);
-			resolution.remove(indexOfSymbol);
+			Double finalResult = Utils.tryParseToDouble(list.get(indexOfSymbol - 1)) * Utils.tryParseToDouble(list.get(indexOfSymbol + 1));
+			list.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
+			list.remove(indexOfSymbol + 1);
+			list.remove(indexOfSymbol);
 		}
 	}
 	
-	public void divideMath(int indexOfSymbol) {
-		if (isThereAMinusSymbol(indexOfSymbol)) {
-			int minusSymbol = minusSymbolFinder(indexOfSymbol);
-			multiplyAndDivideCalculationWithMinusSymbol(indexOfSymbol, minusSymbol);
+	public void divideMath(ArrayList<String> list, int indexOfSymbol) {
+		if (isThereAMinusSymbol(list, indexOfSymbol)) {
+			int minusSymbol = minusSymbolFinder(list, indexOfSymbol);
+			multiplyAndDivideCalculationWithMinusSymbol(list, indexOfSymbol, minusSymbol);
 		} else {
-			Double finalResult = Utils.tryParseToDouble(resolution.get(indexOfSymbol - 1)) / Utils.tryParseToDouble(resolution.get(indexOfSymbol + 1));
-			resolution.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
-			resolution.remove(indexOfSymbol + 1);
-			resolution.remove(indexOfSymbol);
+			Double finalResult = Utils.tryParseToDouble(list.get(indexOfSymbol - 1)) / Utils.tryParseToDouble(list.get(indexOfSymbol + 1));
+			list.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
+			list.remove(indexOfSymbol + 1);
+			list.remove(indexOfSymbol);
 		}
 	}
 	
-	public void plusMath(int indexOfSymbol) {
-		Double finalResult = Utils.tryParseToDouble(resolution.get(indexOfSymbol - 1)) + Utils.tryParseToDouble(resolution.get(indexOfSymbol + 1));
-		resolution.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
-		resolution.remove(indexOfSymbol + 1);
-		resolution.remove(indexOfSymbol);
+	public void plusMath(ArrayList<String> list, int indexOfSymbol) {
+		Double finalResult = Utils.tryParseToDouble(list.get(indexOfSymbol - 1)) + Utils.tryParseToDouble(list.get(indexOfSymbol + 1));
+		list.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
+		list.remove(indexOfSymbol + 1);
+		list.remove(indexOfSymbol);
 	}
 	
-	public void minusMath(int indexOfSymbol) {
-		Double finalResult = Utils.tryParseToDouble(resolution.get(indexOfSymbol - 1)) - Utils.tryParseToDouble(resolution.get(indexOfSymbol + 1));
-		resolution.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
-		resolution.remove(indexOfSymbol + 1);
-		resolution.remove(indexOfSymbol);
+	public void minusMath(ArrayList<String> list, int indexOfSymbol) {
+		Double finalResult = Utils.tryParseToDouble(list.get(indexOfSymbol - 1)) - Utils.tryParseToDouble(list.get(indexOfSymbol + 1));
+		list.set(indexOfSymbol - 1, Utils.decimalPrinting(finalResult));
+		list.remove(indexOfSymbol + 1);
+		list.remove(indexOfSymbol);
 	}
 	
-	public boolean isThereAMathSymbol() {
-		if (resolution.contains("^") || resolution.contains("\u221A") || resolution.contains("×") || resolution.contains("\u00F7") || resolution.contains("+") || resolution.contains("-")) {
+	public boolean isThereAMathSymbol(ArrayList<String> list) {
+		if (list.contains("^") || list.contains("\u221A") || list.contains("×") || list.contains("\u00F7") || list.contains("+") || list.contains("-")) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-	public boolean isNumerical(int index) {
-		if (Utils.isNumeric(resolution.get(index))) {
+	public boolean isNumerical(ArrayList<String> list, int index) {
+		if (Utils.isNumeric(list.get(index))) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-	public boolean isMinus(int index) {
-		if (resolution.get(index) == "-") {
+	public boolean isMinus(ArrayList<String> list, int index) {
+		if (list.get(index) == "-") {
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-    public boolean isRoot(int index) {
-    	if (resolution.get(index) == "\u221A") {
+    public boolean isRoot(ArrayList<String> list, int index) {
+    	if (list.get(index) == "\u221A") {
 			return true;
 		} else {
 			return false;
 		}
 	}
     
-    public boolean isParenthese(int index) {
-    	if (resolution.get(index) == "(") {
+    public boolean isParenthese(ArrayList<String> list, int index) {
+    	if (list.get(index) == "(") {
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-	public boolean isFirstIndexUsable() {
-		if (isNumerical(0) || isMinus(0) || isRoot(0) || isParenthese(0)) {
+	public boolean isFirstIndexUsable(ArrayList<String> list) {
+		if (isNumerical(list, 0) || isMinus(list, 0) || isRoot(list, 0) || isParenthese(list, 0)) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-	public boolean isThereThisSymbol(String symbolToBeSearched) {
-		for (int i = 0; i < resolution.size(); i++) {
-			if (resolution.get(i) == symbolToBeSearched && Utils.isNumeric(resolution.get(i + 1))) {
+	public boolean isThereThisSymbol(ArrayList<String> list, String symbolToBeSearched) {
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i) == symbolToBeSearched && Utils.isNumeric(list.get(i + 1))) {
 				return true;
-			} else if (resolution.get(i) == symbolToBeSearched && resolution.get(i + 1) == "-") {
+			} else if (list.get(i) == symbolToBeSearched && list.get(i + 1) == "-") {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public int symbolIndexFinder(String symbolToBeSearched) {
+	public int symbolIndexFinder(ArrayList<String> list, String symbolToBeSearched) {
 		int symbolIndex = 0;
-		for (int i = 0; i < resolution.size(); i++) {
-			if (resolution.get(i) == symbolToBeSearched && Utils.isNumeric(resolution.get(i + 1))) {
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i) == symbolToBeSearched && Utils.isNumeric(list.get(i + 1))) {
 				symbolIndex =+ i;
-			} else if (resolution.get(i) == symbolToBeSearched && resolution.get(i + 1) == "-") {
+			} else if (list.get(i) == symbolToBeSearched && list.get(i + 1) == "-") {
 				symbolIndex =+ i;
 			}
 		}
 		return symbolIndex;
 	}
 	
-	public boolean mathCanBeDone() {
-		if (isThereAMathSymbol() && isFirstIndexUsable() && resolution.size() >= 2) {
+	public boolean mathCanBeDone(ArrayList<String> list) {
+		if (isThereAMathSymbol(list) && isFirstIndexUsable(list) && list.size() >= 2) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-	public void mathCalculationCaller() {
-		if (mathCanBeDone()) {
+	public int leftParenthesesCounter(ArrayList<String> list) {
+		int count = 0;
+		 for (String e : list) {
+			if (e == "(") {
+				count++;
+			}
+		}
+		return count;
+	}
+	public int rightParenthesesCounter(ArrayList<String> list) {
+		int count = 0;
+		 for (String e : list) {
+			if (e == ")") {
+				count++;
+			}
+		}
+		return count;
+	}
+	public boolean isThereLeftParentheses(ArrayList<String> list, int startingIndex) {
+		for (int i = startingIndex; i < list.size() || list.get(i) == ")"; i++) {
+			if (list.get(i) == "(") {
+				return true;
+			}
+		}
+		return false;
+	}
+	public int getIndexOfCorrespondingRightParentheses(ArrayList<String> list) {
+		int index = 0;
+		//to be added
+		return index;
+	}
+	public ArrayList<String> getContentInsideParentheses(ArrayList<String> list, int leftParenthesesIndex, int rightParenthesesIndex) {
+		ArrayList<String> contentInsideParentheses = new ArrayList<>();
+		for (int i = leftParenthesesIndex; i < rightParenthesesIndex; i++) {
+			contentInsideParentheses.add(list.get(i));
+		}
+		return contentInsideParentheses;
+	}
+	public String getCalculatedContentInsideParentheses(ArrayList<String> contentInsideParentheses) {
+		mathCalculationCaller(contentInsideParentheses);
+		return contentInsideParentheses.get(0);
+	}
+	
+	public void mathCalculationCaller(ArrayList<String> list) {
+		if (mathCanBeDone(list)) {
 
-			preResult.setText(equation);
 			int indexOfSymbol = 0;
 			
 			//power
-			if (isThereThisSymbol("^")) {
-				indexOfSymbol =+ symbolIndexFinder("^");
-				powerMath(indexOfSymbol);
+			if (isThereThisSymbol(list, "^")) {
+				indexOfSymbol =+ symbolIndexFinder(list, "^");
+				powerMath(list, indexOfSymbol);
 				indexOfSymbol = 0;
 			}
 			//parentheses
-			if (resolution.contains("(") && resolution.contains(")")) {
-	
-				int leftParentheseCount = 0;
-				int rightParentheseCount = 0;
+			if (isThereLeftParentheses(list, 0)) {
+				int indexOfFirstLeftParentheses = list.indexOf("(");
 				
-				int leftParentheseIndex = -1;
-				int rightParentheseIndex = -1;
-				
-				// error where the parentheses is in the wrong order or isn't counted correctly
-				//
-				// example: 2x(2x'('2+2)')' | *the "marked" parentheses are being used together, result: 2x(8
-				// example: (2+2)x(2+2) | *the second set of parentheses is getting the index of the first set, result: x2)
-				
-				for (int i = 0; i < resolution.size(); i++) {
-					if (resolution.get(i) == "(" && leftParentheseCount < 2) {
-						leftParentheseCount++;
-						leftParentheseIndex = i;
-					}
-					else if (resolution.get(i) == ")") {
-						rightParentheseCount++;
-						rightParentheseIndex = i;
-					}
-					if (leftParentheseCount > 0 && leftParentheseCount == rightParentheseCount) {
-						ArrayList<String> substitutionList = new ArrayList<>();
-						for (String e : resolution) {
-							substitutionList.add(e);
-						}
-						resolution.clear();
-						for (int j = leftParentheseIndex + 1; j < rightParentheseIndex; j++) {
-							resolution.add(substitutionList.get(j));
-						}
-						
-						onEqualAction();
-						
-						for (int j = rightParentheseIndex; j > leftParentheseIndex; j--) {
-							substitutionList.remove(j);
-						}
-						substitutionList.set(leftParentheseIndex, resolution.get(0));
-						resolution = substitutionList;
-					}
-				}
 			}
 			//root
-			if (isThereThisSymbol("\u221A")) {
-				indexOfSymbol =+ symbolIndexFinder("\u221A");
-				rootMath(indexOfSymbol);
+			if (isThereThisSymbol(list, "\u221A")) {
+				indexOfSymbol =+ symbolIndexFinder(list, "\u221A");
+				rootMath(list, indexOfSymbol);
 				indexOfSymbol = 0;
 			}
 			//multiply
-			if (isThereThisSymbol("×")) {
-				indexOfSymbol =+ symbolIndexFinder("×");
-				multiplyMath(indexOfSymbol);
+			if (isThereThisSymbol(list, "×")) {
+				indexOfSymbol =+ symbolIndexFinder(list, "×");
+				multiplyMath(list, indexOfSymbol);
 				indexOfSymbol = 0;
 			}
 			//divide
-			if (isThereThisSymbol("\u00F7")) {
-				indexOfSymbol =+ symbolIndexFinder("\u00F7");
-				divideMath(indexOfSymbol);
+			if (isThereThisSymbol(list, "\u00F7")) {
+				indexOfSymbol =+ symbolIndexFinder(list, "\u00F7");
+				divideMath(list, indexOfSymbol);
 				indexOfSymbol = 0;
 			}
 			//plus
-			if (isThereThisSymbol("+")) {
-				indexOfSymbol =+ symbolIndexFinder("+");
-				plusMath(indexOfSymbol);
+			if (isThereThisSymbol(list, "+")) {
+				indexOfSymbol =+ symbolIndexFinder(list, "+");
+				plusMath(list, indexOfSymbol);
 				indexOfSymbol = 0;
 			}
 			//minus
-            if (isThereThisSymbol("-")) {
-            	indexOfSymbol =+ symbolIndexFinder("-");
-				minusMath(indexOfSymbol);
+            if (isThereThisSymbol(list, "-")) {
+            	indexOfSymbol =+ symbolIndexFinder(list, "-");
+				minusMath(list, indexOfSymbol);
 				indexOfSymbol = 0;
 			}
             
-            mathCalculationCaller();
+            mathCalculationCaller(list);
 		}
 	}
 	
 	@FXML
 	public void onEqualAction() {
-		mathCalculationCaller();
+		preResult.setText(equation);
+		
+		mathCalculationCaller(resolution);
 		
 		String substituition = "";
         for (String e : resolution) {
