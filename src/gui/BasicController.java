@@ -136,7 +136,7 @@ public class BasicController {
 	}
 	
 	public void addMathSymbol(String symbol) {
-		if (isNumerical(resolution, resolution.size() - 1) || isParenthese(resolution, resolution.size() - 1)) {
+		if (isNumerical(resolution, resolution.size() - 1) || isLeftParentheses(resolution, resolution.size() - 1)) {
 			equation += symbol;
 			resolution.add(symbol);
 		} else {
@@ -501,8 +501,16 @@ public class BasicController {
 		}
 	}
     
-    public boolean isParenthese(ArrayList<String> list, int index) {
+    public boolean isLeftParentheses(ArrayList<String> list, int index) {
     	if (list.get(index) == "(") {
+			return true;
+		} else {
+			return false;
+		}
+	}
+    
+    public boolean isRightParentheses(ArrayList<String> list, int index) {
+    	if (list.get(index) == ")") {
 			return true;
 		} else {
 			return false;
@@ -510,7 +518,7 @@ public class BasicController {
 	}
 	
 	public boolean isFirstIndexUsable(ArrayList<String> list) {
-		if (isNumerical(list, 0) || isMinus(list, 0) || isRoot(list, 0) || isParenthese(list, 0)) {
+		if (isNumerical(list, 0) || isMinus(list, 0) || isRoot(list, 0) || isLeftParentheses(list, 0)) {
 			return true;
 		} else {
 			return false;
@@ -548,37 +556,33 @@ public class BasicController {
 		}
 	}
 	
-	public int leftParenthesesCounter(ArrayList<String> list) {
-		int count = 0;
-		 for (String e : list) {
-			if (e == "(") {
-				count++;
-			}
-		}
-		return count;
-	}
-	public int rightParenthesesCounter(ArrayList<String> list) {
-		int count = 0;
-		 for (String e : list) {
-			if (e == ")") {
-				count++;
-			}
-		}
-		return count;
-	}
 	public boolean isThereLeftParentheses(ArrayList<String> list, int startingIndex) {
-		for (int i = startingIndex; i < list.size() || list.get(i) == ")"; i++) {
+		for (int i = startingIndex; i < list.size(); i++) {
 			if (list.get(i) == "(") {
 				return true;
 			}
 		}
 		return false;
 	}
-	public int getIndexOfCorrespondingRightParentheses(ArrayList<String> list) {
-		int index = 0;
-		//to be added
-		return index;
+	
+	public int getIndexOfCorrespondingRightParentheses(ArrayList<String> list, int indexOfLeftParentheses) {
+		int indexOfCorrespondingRightParentheses = 0;
+		
+		int leftParenthesesCounter = 1;
+		int rightParenthesesCounter = 0;
+		for (int i = indexOfLeftParentheses + 1; i < list.size(); i++) {
+			if (isLeftParentheses(list, i)) {
+				leftParenthesesCounter++;
+			} else if (isRightParentheses(list, i)) {
+				rightParenthesesCounter++;
+			}
+			if (leftParenthesesCounter == rightParenthesesCounter) {
+				indexOfCorrespondingRightParentheses = i;
+			}
+		}
+		return indexOfCorrespondingRightParentheses;
 	}
+	
 	public ArrayList<String> getContentInsideParentheses(ArrayList<String> list, int leftParenthesesIndex, int rightParenthesesIndex) {
 		ArrayList<String> contentInsideParentheses = new ArrayList<>();
 		for (int i = leftParenthesesIndex; i < rightParenthesesIndex; i++) {
@@ -586,9 +590,24 @@ public class BasicController {
 		}
 		return contentInsideParentheses;
 	}
+	
 	public String getCalculatedContentInsideParentheses(ArrayList<String> contentInsideParentheses) {
 		mathCalculationCaller(contentInsideParentheses);
-		return contentInsideParentheses.get(0);
+		return contentInsideParentheses.get(0); //bug here
+	}
+	
+	public void parenthesesSubstitution(ArrayList<String> list, int leftParentheses, int rightParentheses, String newContent) {
+		Utils.removeFromListInRange(list, leftParentheses + 1, rightParentheses);
+		list.set(leftParentheses, newContent);
+	}
+	
+	public void parenthesesMath(ArrayList<String> list) {
+		int indexOfFirstLeftParentheses = list.indexOf("(");
+		int indexOfCorrespondingRightParentheses = getIndexOfCorrespondingRightParentheses(list, indexOfFirstLeftParentheses);
+		ArrayList<String> contentInsideParentheses = new ArrayList<>();
+		contentInsideParentheses = getContentInsideParentheses(list, indexOfFirstLeftParentheses, indexOfCorrespondingRightParentheses);
+		String newContent = getCalculatedContentInsideParentheses(contentInsideParentheses);
+		parenthesesSubstitution(list, indexOfFirstLeftParentheses, indexOfCorrespondingRightParentheses, newContent);
 	}
 	
 	public void mathCalculationCaller(ArrayList<String> list) {
@@ -604,8 +623,7 @@ public class BasicController {
 			}
 			//parentheses
 			if (isThereLeftParentheses(list, 0)) {
-				int indexOfFirstLeftParentheses = list.indexOf("(");
-				
+				parenthesesMath(list);
 			}
 			//root
 			if (isThereThisSymbol(list, "\u221A")) {

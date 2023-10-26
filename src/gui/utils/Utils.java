@@ -1,5 +1,7 @@
 package gui.utils;
 
+import java.util.ArrayList;
+
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.stage.Stage;
@@ -46,6 +48,9 @@ public class Utils {
 	
 	public static String removeLastChar(String str) {
 	    return removeChars(str, 1);
+	}
+	public static void removeFromListInRange(ArrayList<String> list, int firstIndexToBeRemoved, int lastIndexToBeRemoved) {
+		list.subList(firstIndexToBeRemoved, lastIndexToBeRemoved).clear();
 	}
 	
 }
