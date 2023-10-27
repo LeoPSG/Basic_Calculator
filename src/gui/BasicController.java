@@ -585,7 +585,7 @@ public class BasicController {
 	
 	public ArrayList<String> getContentInsideParentheses(ArrayList<String> list, int leftParenthesesIndex, int rightParenthesesIndex) {
 		ArrayList<String> contentInsideParentheses = new ArrayList<>();
-		for (int i = leftParenthesesIndex; i < rightParenthesesIndex; i++) {
+		for (int i = leftParenthesesIndex + 1; i < rightParenthesesIndex; i++) {
 			contentInsideParentheses.add(list.get(i));
 		}
 		return contentInsideParentheses;
@@ -593,7 +593,7 @@ public class BasicController {
 	
 	public String getCalculatedContentInsideParentheses(ArrayList<String> contentInsideParentheses) {
 		mathCalculationCaller(contentInsideParentheses);
-		return contentInsideParentheses.get(0); //bug here
+		return contentInsideParentheses.get(0); // bug here WHEN (2x2)x2 and 2x((2x2)x(2x2)) but NOT when 2x(2x2) , 
 	}
 	
 	public void parenthesesSubstitution(ArrayList<String> list, int leftParentheses, int rightParentheses, String newContent) {
@@ -604,9 +604,9 @@ public class BasicController {
 	public void parenthesesMath(ArrayList<String> list) {
 		int indexOfFirstLeftParentheses = list.indexOf("(");
 		int indexOfCorrespondingRightParentheses = getIndexOfCorrespondingRightParentheses(list, indexOfFirstLeftParentheses);
-		ArrayList<String> contentInsideParentheses = new ArrayList<>();
-		contentInsideParentheses = getContentInsideParentheses(list, indexOfFirstLeftParentheses, indexOfCorrespondingRightParentheses);
-		String newContent = getCalculatedContentInsideParentheses(contentInsideParentheses);
+		//ArrayList<String> contentInsideParentheses = new ArrayList<>();
+		//contentInsideParentheses = getContentInsideParentheses(list, indexOfFirstLeftParentheses, indexOfCorrespondingRightParentheses);
+		String newContent = getCalculatedContentInsideParentheses(getContentInsideParentheses(list, indexOfFirstLeftParentheses, indexOfCorrespondingRightParentheses));
 		parenthesesSubstitution(list, indexOfFirstLeftParentheses, indexOfCorrespondingRightParentheses, newContent);
 	}
 	

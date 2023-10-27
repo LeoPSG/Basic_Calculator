@@ -50,7 +50,7 @@ public class Utils {
 	    return removeChars(str, 1);
 	}
 	public static void removeFromListInRange(ArrayList<String> list, int firstIndexToBeRemoved, int lastIndexToBeRemoved) {
-		list.subList(firstIndexToBeRemoved, lastIndexToBeRemoved).clear();
+		list.subList(firstIndexToBeRemoved, lastIndexToBeRemoved + 1).clear();
 	}
 	
 }
