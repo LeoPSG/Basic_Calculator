@@ -2,9 +2,11 @@ package gui;
 
 import java.util.ArrayList;
 
+import gui.utils.Alerts;
 import gui.utils.Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
@@ -548,8 +550,16 @@ public class BasicController {
 		return symbolIndex;
 	}
 	
+	public boolean isOnlyRoot(ArrayList<String> list) {
+		if (list.size() == 2 && isRoot(list, 0) && isNumerical(list, 1)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public boolean mathCanBeDone(ArrayList<String> list) {
-		if (isThereAMathSymbol(list) && isFirstIndexUsable(list) && list.size() >= 2) {
+		if (isThereAMathSymbol(list) && isFirstIndexUsable(list) && list.size() > 2 || isOnlyRoot(list)) {
 			return true;
 		} else {
 			return false;
@@ -593,7 +603,7 @@ public class BasicController {
 	
 	public String getCalculatedContentInsideParentheses(ArrayList<String> contentInsideParentheses) {
 		mathCalculationCaller(contentInsideParentheses);
-		return contentInsideParentheses.get(0); // bug here WHEN (2x2)x2 and 2x((2x2)x(2x2)) but NOT when 2x(2x2) , 
+		return contentInsideParentheses.get(0); // bug here WHEN (2x2)x2 and 2x((2x2)x(2x2)) but NOT when 2x(2x2)
 	}
 	
 	public void parenthesesSubstitution(ArrayList<String> list, int leftParentheses, int rightParentheses, String newContent) {
@@ -662,15 +672,19 @@ public class BasicController {
 	
 	@FXML
 	public void onEqualAction() {
-		preResult.setText(equation);
-		
-		mathCalculationCaller(resolution);
-		
-		String substituition = "";
-        for (String e : resolution) {
-        	substituition += e;
-        }
-        equation = substituition;
-        result.setText(equation);
+		if (resolution.isEmpty() || !mathCanBeDone(resolution)) {
+			Alerts.showAlert("ERROR", "Can't calculate", null, AlertType.ERROR);
+		} else {
+			preResult.setText(equation);
+			
+			mathCalculationCaller(resolution);
+			
+			String substituition = "";
+			for (String e : resolution) {
+				substituition += e;
+	    	}
+	    	equation = substituition;
+	    	result.setText(equation);
+		}
 	}
 }
