@@ -20,11 +20,4 @@
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/resources/Calculator-icon.png</name>
-			<type>1</type>
-			<location>C:/Users/LEONARDO/Pictures/Calculator-icon.png</location>
-		</link>
-	</linkedResources>
 </projectDescription>
