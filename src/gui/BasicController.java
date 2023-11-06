@@ -169,7 +169,7 @@ public class BasicController {
 
 	@FXML
 	public void onMultiplyAction() {
-		addMathSymbol("×");
+		addMathSymbol("\u00D7");
 		result.setText(equation);
 	}
 
@@ -190,6 +190,10 @@ public class BasicController {
 	public void onLeftParentheseAction() {
 		equation += "(";
 		result.setText(equation);
+		if (resolution.isEmpty() || resolution.get(resolution.size() - 1) == "(") {
+			resolution.add("");
+			resolution.add("(");
+		}
 		resolution.add("(");
 	}
 
@@ -244,7 +248,7 @@ public class BasicController {
 	}
 	
 	public void powMultiplicationWithSameBase(ArrayList<String> list, int indexOfPowSymbol) {
-		if (list.get(indexOfPowSymbol - 1) == list.get(indexOfPowSymbol + 3) && list.get(indexOfPowSymbol + 2) == "×") {
+		if (list.get(indexOfPowSymbol - 1) == list.get(indexOfPowSymbol + 3) && list.get(indexOfPowSymbol + 2) == "\u00D7") {
 			Double newPowValue = Utils.tryParseToDouble(list.get(indexOfPowSymbol + 1)) + Utils.tryParseToDouble(list.get(indexOfPowSymbol + 5));
 			list.set(indexOfPowSymbol + 1, newPowValue.toString());
 			list.remove(indexOfPowSymbol + 5);
@@ -274,7 +278,7 @@ public class BasicController {
 		}
 	}
 	public void powOnMultiplication(ArrayList<String> list, int indexOfPowSymbol) {
-		if (list.get(indexOfPowSymbol - 1) == ")" && list.get(indexOfPowSymbol - 3) == "×") {
+		if (list.get(indexOfPowSymbol - 1) == ")" && list.get(indexOfPowSymbol - 3) == "\u00D7") {
 			Double aVar = Utils.tryParseToDouble(list.get(indexOfPowSymbol - 4));
 			Double bVar = Utils.tryParseToDouble(list.get(indexOfPowSymbol - 2));
 			list.set(indexOfPowSymbol - 5, aVar.toString());
@@ -379,7 +383,7 @@ public class BasicController {
 		
 		// both numbers are negative
 		case 1:
-			if (isTheMathSymbol(list, "×", mathSymbolIndex)) {
+			if (isTheMathSymbol(list, "\u00D7", mathSymbolIndex)) {
 				operation = var1 * var2;
 			} else {
 				operation = var1 / var2;
@@ -392,7 +396,7 @@ public class BasicController {
 		
 		// left number is negative
 		case 2:
-			if (isTheMathSymbol(list, "×", mathSymbolIndex)) {
+			if (isTheMathSymbol(list, "\u00D7", mathSymbolIndex)) {
 				operation = var1 * var2;
 			} else {
 				operation = var1 / var2;
@@ -404,7 +408,7 @@ public class BasicController {
 		
 		// right number is negative
 		case 3:
-			if (isTheMathSymbol(list, "×", mathSymbolIndex)) {
+			if (isTheMathSymbol(list, "\u00D7", mathSymbolIndex)) {
 				operation = var1 * var2;
 			} else {
 				operation = var1 / var2;
@@ -472,7 +476,7 @@ public class BasicController {
 	}
 	
 	public boolean isThereAMathSymbol(ArrayList<String> list) {
-		if (list.contains("^") || list.contains("\u221A") || list.contains("×") || list.contains("\u00F7") || list.contains("+") || list.contains("-")) {
+		if (list.contains("^") || list.contains("\u221A") || list.contains("\u00D7") || list.contains("\u00F7") || list.contains("+") || list.contains("-")) {
 			return true;
 		} else {
 			return false;
@@ -504,7 +508,7 @@ public class BasicController {
 	}
     
     public boolean isLeftParentheses(ArrayList<String> list, int index) {
-    	if (list.get(index) == "(") {
+    	if (list.get(index) == "(" || list.get(index) == "") {
 			return true;
 		} else {
 			return false;
@@ -593,9 +597,26 @@ public class BasicController {
 		return indexOfCorrespondingRightParentheses;
 	}
 	
+	public boolean isParentheseTheFirstItemOfList(ArrayList<String> list, int leftParenthesesIndex) {
+		if (list.get(leftParenthesesIndex - 1) == "") {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public int whereToBeginGettingContent(ArrayList<String> list, int leftParenthesesIndex) {
+		if (isParentheseTheFirstItemOfList(list, leftParenthesesIndex)) {
+			return 2;
+		} else {
+			return 1;
+		}
+	}
+	
 	public ArrayList<String> getContentInsideParentheses(ArrayList<String> list, int leftParenthesesIndex, int rightParenthesesIndex) {
 		ArrayList<String> contentInsideParentheses = new ArrayList<>();
-		for (int i = leftParenthesesIndex + 1; i < rightParenthesesIndex; i++) {
+		int firstItemToGet = leftParenthesesIndex + whereToBeginGettingContent(list, leftParenthesesIndex);
+		for (int i = firstItemToGet; i < rightParenthesesIndex; i++) {
 			contentInsideParentheses.add(list.get(i));
 		}
 		return contentInsideParentheses;
@@ -642,8 +663,8 @@ public class BasicController {
 				indexOfSymbol = 0;
 			}
 			//multiply
-			if (isThereThisSymbol(list, "×")) {
-				indexOfSymbol =+ symbolIndexFinder(list, "×");
+			if (isThereThisSymbol(list, "\u00D7")) {
+				indexOfSymbol =+ symbolIndexFinder(list, "\u00D7");
 				multiplyMath(list, indexOfSymbol);
 				indexOfSymbol = 0;
 			}
