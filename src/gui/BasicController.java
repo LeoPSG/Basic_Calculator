@@ -518,9 +518,17 @@ public class BasicController {
 			return false;
 		}
 	}
+    
+    public boolean isBlankSpace(ArrayList<String> list, int index) {
+    	if (list.get(index) == "") {
+			return true;
+		} else {
+			return false;
+		}
+    }
 	
 	public boolean isFirstIndexUsable(ArrayList<String> list) {
-		if (isNumerical(list, 0) || isMinus(list, 0) || isRoot(list, 0) || isLeftParentheses(list, 0)) {
+		if (isNumerical(list, 0) || isMinus(list, 0) || isRoot(list, 0) || isLeftParentheses(list, 0) || isBlankSpace(list, 0)) {
 			return true;
 		} else {
 			return false;
@@ -595,6 +603,7 @@ public class BasicController {
 	
 	public ArrayList<String> getContentInsideParentheses(ArrayList<String> list, int leftParenthesesIndex, int rightParenthesesIndex) {
 		ArrayList<String> contentInsideParentheses = new ArrayList<>();
+		contentInsideParentheses.add("");
 		for (int i = leftParenthesesIndex + 1; i < rightParenthesesIndex; i++) {
 			contentInsideParentheses.add(list.get(i));
 		}
@@ -603,19 +612,22 @@ public class BasicController {
 	
 	public String getCalculatedContentInsideParentheses(ArrayList<String> contentInsideParentheses) {
 		mathCalculationCaller(contentInsideParentheses);
-		return contentInsideParentheses.get(0); // bug here WHEN (2x2)x2 and 2x((2x2)x(2x2)) but NOT when 2x(2x2)
+		return contentInsideParentheses.get(0);
 	}
 	
 	public void parenthesesSubstitution(ArrayList<String> list, int leftParentheses, int rightParentheses, String newContent) {
-		Utils.removeFromListInRange(list, leftParentheses + 1, rightParentheses);
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i) == "") {
+				list.remove(i);
+			}
+		}
+		Utils.removeFromListInRange(list, leftParentheses + 1, rightParentheses); // bug here when (2x2)x2 and 2x((2x2)x2) -> fromIndex(3) > toIndex(1)
 		list.set(leftParentheses, newContent);
 	}
 	
 	public void parenthesesMath(ArrayList<String> list) {
 		int indexOfFirstLeftParentheses = list.indexOf("(");
 		int indexOfCorrespondingRightParentheses = getIndexOfCorrespondingRightParentheses(list, indexOfFirstLeftParentheses);
-		//ArrayList<String> contentInsideParentheses = new ArrayList<>();
-		//contentInsideParentheses = getContentInsideParentheses(list, indexOfFirstLeftParentheses, indexOfCorrespondingRightParentheses);
 		String newContent = getCalculatedContentInsideParentheses(getContentInsideParentheses(list, indexOfFirstLeftParentheses, indexOfCorrespondingRightParentheses));
 		parenthesesSubstitution(list, indexOfFirstLeftParentheses, indexOfCorrespondingRightParentheses, newContent);
 	}
