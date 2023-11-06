@@ -190,10 +190,6 @@ public class BasicController {
 	public void onLeftParentheseAction() {
 		equation += "(";
 		result.setText(equation);
-		if (resolution.isEmpty() || resolution.get(resolution.size() - 1) == "(") {
-			resolution.add("");
-			resolution.add("(");
-		}
 		resolution.add("(");
 	}
 
@@ -508,7 +504,7 @@ public class BasicController {
 	}
     
     public boolean isLeftParentheses(ArrayList<String> list, int index) {
-    	if (list.get(index) == "(" || list.get(index) == "") {
+    	if (list.get(index) == "(") {
 			return true;
 		} else {
 			return false;
@@ -597,26 +593,9 @@ public class BasicController {
 		return indexOfCorrespondingRightParentheses;
 	}
 	
-	public boolean isParentheseTheFirstItemOfList(ArrayList<String> list, int leftParenthesesIndex) {
-		if (list.get(leftParenthesesIndex - 1) == "") {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public int whereToBeginGettingContent(ArrayList<String> list, int leftParenthesesIndex) {
-		if (isParentheseTheFirstItemOfList(list, leftParenthesesIndex)) {
-			return 2;
-		} else {
-			return 1;
-		}
-	}
-	
 	public ArrayList<String> getContentInsideParentheses(ArrayList<String> list, int leftParenthesesIndex, int rightParenthesesIndex) {
 		ArrayList<String> contentInsideParentheses = new ArrayList<>();
-		int firstItemToGet = leftParenthesesIndex + whereToBeginGettingContent(list, leftParenthesesIndex);
-		for (int i = firstItemToGet; i < rightParenthesesIndex; i++) {
+		for (int i = leftParenthesesIndex + 1; i < rightParenthesesIndex; i++) {
 			contentInsideParentheses.add(list.get(i));
 		}
 		return contentInsideParentheses;
