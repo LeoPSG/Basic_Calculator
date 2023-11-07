@@ -584,8 +584,6 @@ public class BasicController {
 	}
 	
 	public int getIndexOfCorrespondingRightParentheses(ArrayList<String> list, int indexOfLeftParentheses) {
-		int indexOfCorrespondingRightParentheses = 0;
-		
 		int leftParenthesesCounter = 1;
 		int rightParenthesesCounter = 0;
 		for (int i = indexOfLeftParentheses + 1; i < list.size(); i++) {
@@ -595,10 +593,10 @@ public class BasicController {
 				rightParenthesesCounter++;
 			}
 			if (leftParenthesesCounter == rightParenthesesCounter) {
-				indexOfCorrespondingRightParentheses = i;
+				return i;
 			}
 		}
-		return indexOfCorrespondingRightParentheses;
+		return -1;
 	}
 	
 	public ArrayList<String> getContentInsideParentheses(ArrayList<String> list, int leftParenthesesIndex, int rightParenthesesIndex) {
@@ -621,7 +619,8 @@ public class BasicController {
 				list.remove(i);
 			}
 		}
-		Utils.removeFromListInRange(list, leftParentheses + 1, rightParentheses); // bug here when (2x2)x2 and 2x((2x2)x2) -> fromIndex(3) > toIndex(1)
+		Utils.removeFromListInRange(list, leftParentheses + 1, rightParentheses); // bug here when 2x((2x2)x2) -> fromIndex(3) > toIndex(1)
+		list.remove(rightParentheses);
 		list.set(leftParentheses, newContent);
 	}
 	
@@ -677,8 +676,9 @@ public class BasicController {
 				minusMath(list, indexOfSymbol);
 				indexOfSymbol = 0;
 			}
-            
-            mathCalculationCaller(list);
+            if (mathCanBeDone(list)) {
+            	mathCalculationCaller(list);
+            }
 		}
 	}
 	
